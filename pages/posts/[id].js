@@ -41,7 +41,7 @@ export default function PostPage({
         </header>
         <main>
           <article className="prose dark:prose-dark">
-            {posts.body}
+            {posts?.body}
           </article>
         </main>
       </article>
@@ -61,8 +61,6 @@ export default function PostPage({
 export const getServerSideProps = async ({ params }) => {
   const globalData = getGlobalData();
   const posts = await getPostBySlug(params.id);
- 
-
   return {
     props: {
       globalData,

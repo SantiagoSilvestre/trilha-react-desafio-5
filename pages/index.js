@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { getPosts } from '../utils/mdx-utils';
+import { supabase } from '../services/supabaseClient'
 
 import Footer from '../components/Footer';
 import Header from '../components/Header';
@@ -11,11 +12,11 @@ import SEO from '../components/SEO';
 export default function Index({ posts, globalData }) {
   return (
     <Layout>
-      <SEO title={globalData.name} description={globalData.blogTitle} />
-      <Header name={globalData.name} />
+      <SEO title={globalData?.name} description={globalData?.blogTitle} />
+      <Header name={globalData?.name} />
       <main className="w-full">
         <h1 className="text-3xl lg:text-5xl text-center mb-12">
-          {globalData.blogTitle}
+          {globalData?.blogTitle}
         </h1>
         <ul className="w-full">
           {posts.map((post) => (
@@ -46,7 +47,7 @@ export default function Index({ posts, globalData }) {
           ))}
         </ul>
       </main>
-      <Footer copyrightText={globalData.footerText} />
+      <Footer copyrightText={globalData?.footerText} />
       <GradientBackground
         variant="large"
         className="fixed top-20 opacity-40 dark:opacity-60"
@@ -60,7 +61,13 @@ export default function Index({ posts, globalData }) {
 }
 
 export async function getServerSideProps() {
-  const posts = await getPosts();
+  const { data: posts, error } = await supabase.from('post').select('*')
+
+  if (error) {
+    console.error(error)
+    return { props: { post: [] } }
+  }
+ 
   const globalData = getGlobalData()
 
 

@@ -1,9 +1,9 @@
-import { api } from '../services/api'
+import { supabase } from '../services/supabaseClient'
 
 export const getPosts = async () => {
-    const {data} = await api.get('/posts'); 
+    const { data } = await api.get('/posts');
 
-    if(data){
+    if (data) {
         return data;
     }
 
@@ -11,9 +11,13 @@ export const getPosts = async () => {
 }
 
 export const getPostBySlug = async (id) => {
+    const { data: post, error } = await supabase.from('post')
+        .select('*')
+        .eq('id', id)
 
-    //TODO: BUSCAR UM POST EM ESPECIFICO.
-    //const {data} = await api.get(`/post?id=eq.${id}`)
-
-    return {}
+    if (error) {
+        console.error(error)
+        return {}
+    }
+    return post[0]
 }
